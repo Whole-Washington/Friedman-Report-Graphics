@@ -1,0 +1,48 @@
+---
+title: "WW Economics Graphics"
+author: "Kelsey Breseman"
+date: "2022-09-16"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(forcats)
+```
+
+# Whole Washington statistics
+From the [Friedman report](https://secureservercdn.net/198.71.189.51/cz8.ce5.myftpupload.com/wp-content/uploads/2022/05/Funding-universal-healthcare-in-Washington-June-5-2021-Friedman.pdf)
+
+Dataframe showing the proportion reporting that they did not receive medical care in the past year because of cost.
+Source: Commonwealth Fund5
+
+```{r}
+cost_barrier <- data.frame(country=c("Netherlands", "New Zealand", "Australia", "UK", "Switzerland", "France", "Germany", "Sweden", "Norway", "Canada", "USA"),
+                 percent=c(3, 14, 9, 4, 16, 9, 3, 3, 5, 6, 22))
+
+ggplot(cost_barrier, aes(percent, fct_reorder(country, percent), fill=percent)) +
+  geom_col() +
+  ggtitle("People reporting they did not receive medical care because of cost - 2020") +
+  scale_fill_viridis_c() +
+  ylab(NULL)+
+  scale_x_continuous(expand=c(0, 0), limit=c(0,25))
+```
+Revenue sources under Whole WA
+
+
+```{r}
+library(waffle)
+revenue <- data.frame(source=c("8.5% employer payroll", "2% employee payroll", "2% sole proprietorship", "8.5% capital gains"),
+                 amount_millions=c(23334, 5490, 0.82, 2993))
+revenue_double <- c("Employer pays 8.5% of payroll: $23,334m"=23334, "Employee pays up to 2% of payroll: $5,490m"=5490, "2% of sole proprietorship: $0.82m"=0.82, "8.5% of capital gains: $2,993m"=2993)
+
+waffle(revenue_double/100, size=1.25, colors=c("skyblue", "steelblue", "gray", "darkblue"),
+  title="How Whole Washington Pays for Universal Healthcare",
+  xlab="1 square = $100 million\n*Under $15k exempt in all categories\n**Employer responsible for 10.5% but may pass up to 2% to employees")
+
+```
+
+```{r}
+revenue$amount_millions/sum(revenue$amount_millions)
+```
